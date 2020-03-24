@@ -1,0 +1,4 @@
+
+SQLALCHEMY_DATABASE_URI = 'postgresql://mftest:mftest@10.0.3.7:5432/mofang_mobile'
+SQLALCHEMY_POOL_SIZE = 500
+SQLALCHEMY_TRACK_MODIFICATIONS = True

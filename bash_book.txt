@@ -1,0 +1,16 @@
+
+# 根据dockerfile文件创建专属镜像
+docker build -f dockerfile -t web-py3:1.0 .
+
+
+# 根据专属镜像创建数据卷容器，和宿主机绑定数据卷
+# 后续其他容器都绑定数据卷到这个容器，这样就不用每个容器都绑定一遍了
+docker run -it --name=docker_web1 -v /data/logs/docker:/data/logs -v /data/project:/root/project  web-py3:1.0
+
+# 根据专属创建镜像 生成容器，和数据卷容器绑定，和宿主机绑定端口
+docker run -id --name=docker_web2 --volumes-from docker_web1 -p 3278:3278 web-py3:1.0 /bin/bash 　# 服务一
+docker run -id --name=docker_web3 --volumes-from docker_web1 -p 3279:3279 web-py3:1.0 /bin/bash   # 服务二
+
+# 更新代码后启动服务，不重启docker
+docker exec -id docker_web2 bash /root/project/docker_web2/start.sh  # 服务一
+docker exec -id docker_web3 bash /root/project/docker_web3/start.sh  # 服务二
