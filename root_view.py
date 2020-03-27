@@ -11,6 +11,10 @@ root = Blueprint('root', __name__, url_prefix='/member/root/')
 def index():
     params = json.loads(unquote_plus(request.args.get('params')))
     mf_logger.info("参数params:" + str(params))
+    logStr = ''
+    for i in range(100):
+        logStr = logStr+str(i) + '-'
+    mf_logger.info(logStr)
     response = make_response(json.dumps(params), 200)
     response.headers['Content-Type'] = 'application/json'
     return response

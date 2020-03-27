@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-kill $(ps aux | grep '3278' | awk '{print $2}')  > /dev/null 2> /dev/null || :
+# docker容器内部启动服务脚本
+
+kill $(ps aux | grep '3279' | awk '{print $2}')  > /dev/null 2> /dev/null || :
 
 
 
@@ -18,4 +20,4 @@ echo "Environment: $FLASK_ENV"
 echo "Thread Count: $THREAD_COUNT"
 
 cd /root/project/docker_web
-gunicorn -k gevent -w $THREAD_COUNT -b 0.0.0.0:3278 app:app -t 6000000 --daemon
+gunicorn -k gevent -w $THREAD_COUNT -b 0.0.0.0:3279 app:app -t 6000000 --daemon

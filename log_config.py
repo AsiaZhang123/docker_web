@@ -4,7 +4,7 @@ import logging.config
 
 # 定义三种日志输出格式
 # 其中name为make_logger的参数name
-standard_format = '[%(levelname)s][%(asctime)s][%(threadName)s:%(thread)d][task_id:%(name)s]' \
+standard_format = '[%(levelname)s][%(asctime)s][%(processName)s:%(process)d][task_id:%(name)s]' \
                   '\n[%(filename)s-%(funcName)s:%(lineno)d][%(message)s]'
 
 simple_format = '[%(levelname)s][%(asctime)s][%(filename)s-%(funcName)s:%(lineno)d]%(message)s'
@@ -46,11 +46,13 @@ LOGGING_DIC = {
         # 打印到common文件的日志,收集info及以上的日志
         'common': {
             'level': 'INFO',
-            'class': 'logging.handlers.RotatingFileHandler',  # 保存到文件
+            # 'class': 'logging.handlers.RotatingFileHandler',  # 保存到文件
+            'class': 'clog.ConcurrentRotatingFileHandler',  # 保存到文件
             'formatter': 'simple',
             'filename': '%s/access.log' % logfile_name,  # 日志文件路径
             'maxBytes': 1024 * 1024 * 5,  # 日志大小 5M
-            'backupCount': 5,  # 备份5个日志文件
+            # 'maxBytes': 1024,  # 日志大小 1kb
+            'backupCount': 10,  # 备份5个日志文件
             'encoding': 'utf-8',  # 日志文件的编码，再也不用担心中文log乱码了
         },
         # 打印到importance文件的日志,收集error及以上的日志
@@ -59,8 +61,8 @@ LOGGING_DIC = {
             'class': 'logging.handlers.RotatingFileHandler',  # 保存到文件
             'formatter': 'distinct',
             'filename': '%s/importance.log' % logfile_name,  # 日志文件
-            # 'maxBytes': 1024*1024*5,  # 日志大小 5M
-            'maxBytes': 300,  # 日志大小 300kb
+            # 'maxBytes': 1024 * 1024 * 5,  # 日志大小 5M
+            'maxBytes': 1024*300,  # 日志大小 300kb
             'backupCount': 5,  # 备份5个日志文件
             'encoding': 'utf-8',  # 日志文件的编码，再也不用担心中文log乱码了
         },
