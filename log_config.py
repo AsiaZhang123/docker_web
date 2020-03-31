@@ -47,11 +47,12 @@ LOGGING_DIC = {
         'common': {
             'level': 'INFO',
             # 'class': 'logging.handlers.RotatingFileHandler',  # 保存到文件
-            'class': 'clog.ConcurrentRotatingFileHandler',  # 保存到文件
+            # 'class': 'clog.ConcurrentRotatingFileHandler',  # 保存到文件
+            'class': 'clog.MyRotatingFileHandler',  # 保存到文件
             'formatter': 'simple',
             'filename': '%s/access.log' % logfile_name,  # 日志文件路径
             'maxBytes': 1024 * 1024 * 5,  # 日志大小 5M
-            # 'maxBytes': 1024,  # 日志大小 1kb
+            # 'maxBytes': 1024*100,  # 日志大小 100kb
             'backupCount': 10,  # 备份5个日志文件
             'encoding': 'utf-8',  # 日志文件的编码，再也不用担心中文log乱码了
         },
@@ -66,6 +67,17 @@ LOGGING_DIC = {
             'backupCount': 5,  # 备份5个日志文件
             'encoding': 'utf-8',  # 日志文件的编码，再也不用担心中文log乱码了
         },
+        # 打印到common文件的日志,收集info及以上的日志
+        'common_time': {
+            'level': 'INFO',
+            # 'class': 'logging.handlers.TimedRotatingFileHandler',  # 保存到文件，根据时间分文件
+            'class': 'clog.MyTimedRotatingFileHandler',  # 保存到文件，根据时间分文件
+            'when': 'd',  # 每分钟为一个文件
+            'formatter': 'simple',
+            'filename': '%s/access.log' % logfile_name,  # 日志文件路径
+            'backupCount': 5,  # 备份5个日志文件
+            'encoding': 'utf-8',  # 日志文件的编码，再也不用担心中文log乱码了
+        },
     },
     # logger实例
     'loggers': {
@@ -76,7 +88,7 @@ LOGGING_DIC = {
             'propagate': True,  # 向上（更高level的logger）传递
         },
         'default': {
-            'handlers': ['console', 'common', 'importance'],
+            'handlers': ['console', 'common_time', 'importance'],
             'level': 'INFO',
             'propagate': True,  # 向上（更高level的logger）传递
         },
