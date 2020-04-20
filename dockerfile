@@ -24,6 +24,8 @@ RUN pip install tornado==6.0.4 -i https://pypi.tuna.tsinghua.edu.cn/simple/
 RUN pip install psycopg2==2.8.4 -i https://pypi.tuna.tsinghua.edu.cn/simple/
 RUN pip install gevent==1.4.0 -i https://pypi.tuna.tsinghua.edu.cn/simple/
 RUN pip install gunicorn==20.0.4 -i https://pypi.tuna.tsinghua.edu.cn/simple/
+RUN pip install BeautifulReport==0.1.2 -i https://pypi.tuna.tsinghua.edu.cn/simple/
+RUN pip install pika==1.1.0 -i https://pypi.tuna.tsinghua.edu.cn/simple/
 
 # 设置容器启动运行命令
 CMD /bin/bash

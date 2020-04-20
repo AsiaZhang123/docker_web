@@ -4,7 +4,7 @@ from urllib.parse import unquote_plus
 from flask import make_response, request, Blueprint
 from log_config import mf_logger
 
-root = Blueprint('root', __name__, url_prefix='/member/root/')
+root = Blueprint('root', __name__, url_prefix='/root/')
 
 
 @root.route('/index.json', methods=('GET',))

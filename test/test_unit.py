@@ -1,5 +1,10 @@
 import unittest
+import requests
+from requests import RequestException
 from unittest import TestCase, main
+from BeautifulReport import BeautifulReport
+
+from test.test_data import NONE_DATA
 
 
 def func(n):
@@ -13,6 +18,17 @@ def func(n):
     # 自定义  使用 suite 设置，suite = unittest.TestSuite()
 
 class myTest(unittest.TestCase):
+    cookie = None
+    headers = None
+    # def __init__(self):
+    #     self.cookie = None
+    #     self.headers = None
+    #     super(myTest, self).__init__()
+
+    def set_cookie(self, response):
+        if response.cookie is not None:
+            self.cookie = response.cookie
+
     # 类的前置函数,整个类的所有实例执行前，先执行
     @classmethod
     def setUpClass(cls) -> None:
@@ -26,14 +42,32 @@ class myTest(unittest.TestCase):
     # 实例的初始化，就是前置中间件
     def setUp(self):
         print('setUp!!!')
+        self.headers = {
+            'cookie': self.cookie,
+            'user-agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
+                          'Chrome/80.0.3987.163 Safari/537.36',
+            'content-type': 'application/json; charset=UTF-8'
+        }
 
     # 实例的释放，后置中间件
     def tearDown(self):
         print("tearDown!!!")
 
     def test_nihao1(self):
-        print(1)
-        self.assertEqual(func(4), 6)
+        url = 'http://localhost:3278/root/index.json'
+        for a in NONE_DATA:
+            params = {
+                'a': a,
+                'b': a
+            }
+            try:
+                req = requests.post(url=url, data=params, headers=self.headers)
+                req_data = req.json()
+                self.assertEqual(req_data.get('code'), 200, msg=req_data.get('msg'))
+            except RequestException as e:
+                self.assertFalse(True, msg=e.msg)
+            except Exception as e:
+                self.assertFalse(True, msg=e.msg)
 
     def test_nihao2(self):
         print(2)
@@ -74,27 +108,37 @@ suite.addTest(myTest('test_nihao4'))
 suite.addTest(myTest('test_nihao2'))
 suite.addTest(myTest('test_nihao1'))
 
-# 二、批量添加test
-cases = [myTest('test_nihao4'), myTest('test_nihao2'), myTest('test_nihao1')]
-suite.addTests(cases)
+# # 二、批量添加test
+# cases = [myTest('test_nihao4'), myTest('test_nihao2'), myTest('test_nihao1')]
+# suite.addTests(cases)
+#
+# # 三、通过读取文件添加
+# #   参数：start_dir 相对本项目的根路径
+# #        pattern 文件名匹配
+# suite = unittest.defaultTestLoader.discover(start_dir='../', pattern='test*.py')
+#
+# # 四、单独添加某个，文件或者类下的测试用例
+# cases = unittest.TestLoader().loadTestsFromTestCase(myTest)  # 根据类名导入
+# # cases = unittest.TestLoader().loadTestsFromName('test_unit')  # 根据文件名导入
+# # cases = unittest.TestLoader().loadTestsFromNames('docker_web')  # 根据文件夹名导入
+# suite.addTests(cases)
+#
+#
+# # 初始化runner，main()其实也是run一个实例化的runner
+# runnerm = unittest.TextTestRunner()
+# # 使用runner.run运行suite
+# runnerm.run(suite)  # == main()
 
-# 三、通过读取文件添加
-#   参数：start_dir 相对本项目的根路径
-#        pattern 文件名匹配
-suite = unittest.defaultTestLoader.discover(start_dir='./', pattern='test*.py')
 
-# 四、单独添加某个，文件或者类下的测试用例
-cases = unittest.TestLoader().loadTestsFromTestCase(myTest)  # 根据类名导入
-# cases = unittest.TestLoader().loadTestsFromName('test_unit')  # 根据文件名导入
-# cases = unittest.TestLoader().loadTestsFromNames('docker_web')  # 根据文件夹名导入
-suite.addTests(cases)
+# # 使用BeautifulReport 执行suite 来生成测试报告
+# 报告存放地址
+log_path = './report/'
+# 测试报告名称
+filename = '测试报告-百度'
+# 用例描述
+description = '百度登录'
 
-
-# 初始化runner，main()其实也是run一个实例化的runner
-runnerm = unittest.TextTestRunner()
-# 使用runner.run运行suite
-runnerm.run(suite)  # == main()
-
-
+result = BeautifulReport(suite)
+result.report(filename=filename, description=description, log_path=log_path)
 
 
